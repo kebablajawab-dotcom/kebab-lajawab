@@ -1,0 +1,7 @@
+{
+  "name": "Kebab Lajawab - Authentic Varanasi Flavorse",
+  "description": "A premium, mouth-watering website for Kebab Lajawab, the best non-vegetarian restaurant in Varanasi. Featuring authentic kebabs, biryanis, and a luxurious dining experience.",
+  "requestFramePermissions": [
+    "geolocation"
+  ]
+}
