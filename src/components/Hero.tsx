@@ -53,7 +53,7 @@ const Hero = () => {
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, delay: 0.2 }}
-          className="text-6xl md:text-8xl font-serif font-bold mb-6 text-gold-gradient"
+          className="text-6xl md:text-9xl font-serif font-bold mb-6 pb-4 text-gold-gradient drop-shadow-[0_5px_15px_rgba(212,175,55,0.4)] tracking-tight leading-tight"
         >
           Kebab Lajawab
         </motion.h1>
@@ -62,9 +62,9 @@ const Hero = () => {
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, delay: 0.4 }}
-          className="text-xl md:text-2xl text-white/80 font-light italic mb-10"
+          className="text-xl md:text-3xl text-white/90 font-light italic mb-10 tracking-wide"
         >
-          "Where Every Bite Tells a Story"
+          "Every Bites, Pure Delite"
         </motion.p>
 
         <motion.div

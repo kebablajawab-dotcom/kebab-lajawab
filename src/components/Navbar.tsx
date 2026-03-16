@@ -47,6 +47,7 @@ const Navbar = () => {
                 {link.name}
               </a>
             ))}
+            
             <a
               href="#reservation"
               className="px-6 py-2 bg-gold hover:bg-amber-accent text-charcoal font-bold rounded-full transition-all duration-300 transform hover:scale-105"
@@ -56,7 +57,7 @@ const Navbar = () => {
           </div>
 
           {/* Mobile Menu Button */}
-          <div className="md:hidden flex items-center">
+          <div className="md:hidden flex items-center gap-4">
             <button
               onClick={() => setIsOpen(!isOpen)}
               className="text-white hover:text-gold focus:outline-none"
@@ -87,6 +88,7 @@ const Navbar = () => {
                   {link.name}
                 </a>
               ))}
+              
               <a
                 href="#reservation"
                 onClick={() => setIsOpen(false)}

@@ -4,6 +4,8 @@ import { REVIEWS } from '../constants';
 import { Star, Quote } from 'lucide-react';
 
 const Reviews = () => {
+  const displayReviews = REVIEWS;
+
   return (
     <section className="py-24 bg-charcoal relative overflow-hidden">
       {/* Background Quote Icon */}
@@ -27,7 +29,7 @@ const Reviews = () => {
         </motion.div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-          {REVIEWS.map((review, index) => (
+          {displayReviews.map((review, index) => (
             <motion.div
               key={review.id}
               initial={{ opacity: 0, y: 30 }}

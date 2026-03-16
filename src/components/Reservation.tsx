@@ -1,8 +1,10 @@
 import React, { useState } from 'react';
 import { motion } from 'motion/react';
-import { Calendar, Users, Clock, MessageSquare, Send } from 'lucide-react';
+import { Calendar, Users, MessageSquare, Send, CheckCircle2 } from 'lucide-react';
 
 const Reservation = () => {
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isSuccess, setIsSuccess] = useState(false);
   const [formData, setFormData] = useState({
     name: '',
     phone: '',
@@ -12,11 +14,69 @@ const Reservation = () => {
     requests: ''
   });
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // In a real app, this would send data to a server
-    alert('Thank you! Your reservation request has been sent. We will contact you shortly.');
+    setIsSubmitting(true);
+
+    try {
+      // Prepare WhatsApp Message
+      const message = encodeURIComponent(`*New Reservation Request*
+
+*Name:* ${formData.name}
+*Phone:* ${formData.phone}
+*Date:* ${formData.date}
+*Time:* ${formData.time}
+*Guests:* ${formData.guests}
+${formData.requests ? `*Special Requests:* ${formData.requests}` : ''}`);
+      
+      // Redirect to WhatsApp
+      const whatsappUrl = `https://wa.me/917651904243?text=${message}`;
+      
+      setIsSuccess(true);
+      setTimeout(() => {
+        window.open(whatsappUrl, '_blank');
+        setIsSubmitting(false);
+
+        // Reset form and state after 10 seconds
+        setTimeout(() => {
+          setIsSuccess(false);
+          setFormData({
+            name: '',
+            phone: '',
+            date: '',
+            time: '',
+            guests: '2',
+            requests: ''
+          });
+        }, 10000);
+      }, 1500);
+
+    } catch (error) {
+      console.error('Reservation error:', error);
+      setIsSubmitting(false);
+    }
   };
+
+  if (isSuccess) {
+    return (
+      <section id="reservation" className="py-24 bg-charcoal/50 relative overflow-hidden">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+          <motion.div
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
+            className="glass-card p-12 max-w-lg mx-auto border-gold/20"
+          >
+            <CheckCircle2 className="w-20 h-20 text-green-500 mx-auto mb-6" />
+            <h2 className="text-3xl font-serif font-bold text-gold mb-4">Reservation Logged!</h2>
+            <p className="text-white/80 mb-8">
+              We've saved your request. Redirecting you to WhatsApp for instant confirmation...
+            </p>
+            <div className="w-12 h-12 border-4 border-gold border-t-transparent rounded-full animate-spin mx-auto"></div>
+          </motion.div>
+        </div>
+      </section>
+    );
+  }
 
   return (
     <section id="reservation" className="py-24 bg-charcoal/50 relative overflow-hidden">
@@ -144,25 +204,11 @@ const Reservation = () => {
 
               <button
                 type="submit"
-                className="w-full py-4 bg-gold hover:bg-amber-accent text-charcoal font-bold rounded-xl transition-all duration-300 flex items-center justify-center gap-2"
+                disabled={isSubmitting}
+                className={`w-full py-4 bg-gold hover:bg-amber-accent text-charcoal font-bold rounded-xl transition-all duration-300 flex items-center justify-center gap-2 ${isSubmitting ? 'opacity-50 cursor-not-allowed' : ''}`}
               >
-                Confirm Reservation <Send size={18} />
+                {isSubmitting ? 'Processing...' : 'Reserve via WhatsApp'} <Send size={18} />
               </button>
-              
-              <div className="flex items-center justify-center gap-4 pt-4">
-                <div className="h-px bg-white/10 flex-grow"></div>
-                <span className="text-xs text-white/30 uppercase tracking-widest">Or Book Via</span>
-                <div className="h-px bg-white/10 flex-grow"></div>
-              </div>
-
-              <a
-                href="https://wa.me/910000000000?text=Hi, I would like to book a table at Kebab Lajawab."
-                target="_blank"
-                rel="noopener noreferrer"
-                className="w-full py-3 border border-green-500/30 text-green-500 hover:bg-green-500 hover:text-white font-bold rounded-xl transition-all duration-300 flex items-center justify-center gap-2"
-              >
-                Book via WhatsApp
-              </a>
             </form>
           </motion.div>
         </div>

@@ -74,18 +74,9 @@ export const MENU_ITEMS: MenuItem[] = [
     image: 'https://images.unsplash.com/photo-1662116765994-4e4473693f2f?auto=format&fit=crop&w=800&q=80'
   },
   {
-    id: '9',
-    name: 'Masala Chai',
-    description: 'Traditional Indian spiced tea brewed with milk.',
-    price: 30,
-    category: 'BEVERAGES',
-    isVeg: true,
-    image: 'https://images.unsplash.com/photo-1561336313-0bd5e0b27ec8?auto=format&fit=crop&w=800&q=80'
-  },
-  {
     id: '10',
     name: 'Cold Drinks',
-    description: 'Assorted chilled soft drinks (Coke, Thums Up, Sprite).',
+    description: 'Refreshing chilled beverages including Mineral Water and Cold Drinks.',
     price: 40,
     category: 'BEVERAGES',
     isVeg: true,
@@ -121,19 +112,12 @@ export const REVIEWS: Review[] = [
     id: '3',
     name: 'Amit Verma',
     rating: 4,
-    text: 'Great place for non-veg lovers. The Biryani is very flavorful. Happy hour deals are excellent.',
+    text: 'Great place for non-veg lovers. The Biryani is very flavorful. Highly recommended.',
     avatar: 'https://i.pravatar.cc/150?u=amit'
   }
 ];
 
 export const OFFERS: Offer[] = [
-  {
-    id: '1',
-    title: 'Happy Hour Special',
-    description: 'Get 20% off on all starters between 4 PM to 7 PM.',
-    discount: '20% OFF',
-    validUntil: 'Daily 4PM - 7PM'
-  },
   {
     id: '2',
     title: 'Weekend Feast',

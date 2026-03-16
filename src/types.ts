@@ -31,6 +31,7 @@ export interface DetailedMenuItem {
   fullPrice?: number | string;
   price?: number | string; // For items with single price
   isHeader?: boolean;
+  image?: string; // Base64 or URL
   subHeaders?: {
     quarter?: string;
     half?: string;

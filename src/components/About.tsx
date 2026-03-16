@@ -30,7 +30,7 @@ const About = () => {
               </div>
               <div className="flex flex-col items-center text-center p-4 glass-card">
                 <Clock className="text-gold mb-3" size={32} />
-                <h4 className="font-bold text-sm">Happy Hour Food</h4>
+                <h4 className="font-bold text-sm">Fast Delivery</h4>
               </div>
               <div className="flex flex-col items-center text-center p-4 glass-card">
                 <MapPin className="text-gold mb-3" size={32} />

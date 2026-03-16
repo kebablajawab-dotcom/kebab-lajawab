@@ -1,7 +1,8 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { ArrowLeft, ImagePlus, X } from 'lucide-react';
+import { ArrowLeft } from 'lucide-react';
 import { DETAILED_MENU } from '../constants';
+import { CategoryMenuData } from '../types';
 
 interface CategoryMenuProps {
   category: string;
@@ -9,47 +10,24 @@ interface CategoryMenuProps {
 }
 
 const CategoryMenu: React.FC<CategoryMenuProps> = ({ category, onBack }) => {
-  const menuData = DETAILED_MENU[category];
-  const [customItemImages, setCustomItemImages] = useState<Record<string, string>>({});
-  const fileInputRef = useRef<HTMLInputElement>(null);
-  const [activeItemKey, setActiveItemKey] = useState<string | null>(null);
+  const [menuData, setMenuData] = useState<CategoryMenuData | null>(null);
 
   useEffect(() => {
-    const savedImages = localStorage.getItem('kebab_lajawab_item_images');
-    if (savedImages) {
-      try {
-        setCustomItemImages(JSON.parse(savedImages));
-      } catch (e) {
-        console.error('Failed to parse saved item images', e);
+    const baseData = DETAILED_MENU[category] || null;
+    if (baseData) {
+      const savedImages = localStorage.getItem(`category_images_${category}`);
+      if (savedImages) {
+        const imagesMap = JSON.parse(savedImages);
+        const updatedItems = baseData.items.map((item, idx) => ({
+          ...item,
+          image: imagesMap[idx] || item.image
+        }));
+        setMenuData({ ...baseData, items: updatedItems });
+      } else {
+        setMenuData(baseData);
       }
     }
-  }, []);
-
-  const handleImageUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0];
-    if (file && activeItemKey) {
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        const base64String = reader.result as string;
-        const newImages = { ...customItemImages, [activeItemKey]: base64String };
-        setCustomItemImages(newImages);
-        localStorage.setItem('kebab_lajawab_item_images', JSON.stringify(newImages));
-      };
-      reader.readAsDataURL(file);
-    }
-  };
-
-  const triggerUpload = (itemKey: string) => {
-    setActiveItemKey(itemKey);
-    fileInputRef.current?.click();
-  };
-
-  const removeImage = (itemKey: string) => {
-    const newImages = { ...customItemImages };
-    delete newImages[itemKey];
-    setCustomItemImages(newImages);
-    localStorage.setItem('kebab_lajawab_item_images', JSON.stringify(newImages));
-  };
+  }, [category]);
 
   if (!menuData) {
     return (
@@ -72,13 +50,6 @@ const CategoryMenu: React.FC<CategoryMenuProps> = ({ category, onBack }) => {
       exit={{ opacity: 0 }}
       className="min-h-screen bg-[#f4f1ea] text-[#2c241a] font-sans selection:bg-gold/30"
     >
-      <input 
-        type="file" 
-        ref={fileInputRef} 
-        className="hidden" 
-        accept="image/*" 
-        onChange={handleImageUpload} 
-      />
       {/* Texture Overlay */}
       <div className="fixed inset-0 opacity-[0.05] pointer-events-none bg-[url('https://www.transparenttextures.com/patterns/parchment.png')]"></div>
       <div className="fixed inset-0 opacity-[0.02] pointer-events-none bg-[url('https://www.transparenttextures.com/patterns/dust.png')]"></div>
@@ -121,9 +92,6 @@ const CategoryMenu: React.FC<CategoryMenuProps> = ({ category, onBack }) => {
 
         <div className="space-y-8">
           {menuData.items.map((item, index) => {
-            const itemKey = `${category}_${item.name}`;
-            const customImage = customItemImages[itemKey];
-
             return (
               <motion.div 
                 key={index}
@@ -137,15 +105,6 @@ const CategoryMenu: React.FC<CategoryMenuProps> = ({ category, onBack }) => {
                     <span className={`${item.isHeader ? 'text-xl font-black' : 'text-xl md:text-2xl font-bold'} uppercase tracking-tight group-hover:text-gold transition-colors duration-300`}>
                       {item.name}
                     </span>
-                    {!item.isHeader && (
-                      <button 
-                        onClick={() => triggerUpload(itemKey)}
-                        className="opacity-0 group-hover:opacity-100 transition-opacity text-[#2c241a]/40 hover:text-gold"
-                        title="Add Image"
-                      >
-                        <ImagePlus size={16} />
-                      </button>
-                    )}
                     {!item.isHeader && <div className="flex-grow border-b border-dotted border-[#2c241a]/20 mx-2"></div>}
                   </div>
                   
@@ -189,26 +148,20 @@ const CategoryMenu: React.FC<CategoryMenuProps> = ({ category, onBack }) => {
                   </div>
                 </div>
 
-                {/* Custom Image Display */}
+                {/* Image Preview if custom */}
                 <AnimatePresence>
-                  {customImage && (
-                    <motion.div 
+                  {item.image && item.image.startsWith('data:') && (
+                    <motion.div
                       initial={{ opacity: 0, height: 0 }}
                       animate={{ opacity: 1, height: 'auto' }}
                       exit={{ opacity: 0, height: 0 }}
                       className="mt-4 relative inline-block"
                     >
                       <img 
-                        src={customImage} 
+                        src={item.image} 
                         alt={item.name} 
-                        className="h-32 w-48 object-cover rounded-lg shadow-md border-2 border-gold/20"
+                        className="h-24 w-32 object-cover rounded-md shadow-sm border border-gold/20"
                       />
-                      <button 
-                        onClick={() => removeImage(itemKey)}
-                        className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full p-1 shadow-lg hover:bg-red-600 transition-colors"
-                      >
-                        <X size={12} />
-                      </button>
                     </motion.div>
                   )}
                 </AnimatePresence>

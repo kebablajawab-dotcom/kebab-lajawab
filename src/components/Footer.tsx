@@ -14,7 +14,7 @@ const Footer = () => {
               </span>
             </div>
             <p className="text-white/50 mb-6 italic">
-              "Where Every Bite Tells a Story"
+              "Every Bites, Pure Delite"
             </p>
             <div className="flex items-center gap-2 px-4 py-2 rounded-lg bg-white/5 border border-white/10 inline-block">
               <span className="text-gold font-bold">4.9⭐</span>
@@ -28,7 +28,6 @@ const Footer = () => {
               <li><a href="#" className="hover:text-gold transition-colors">Home</a></li>
               <li><a href="#about" className="hover:text-gold transition-colors">About Us</a></li>
               <li><a href="#menu" className="hover:text-gold transition-colors">Our Menu</a></li>
-              <li><a href="#offers" className="hover:text-gold transition-colors">Special Offers</a></li>
               <li><a href="#reservation" className="hover:text-gold transition-colors">Reservations</a></li>
             </ul>
           </div>
@@ -40,7 +39,6 @@ const Footer = () => {
               <li><a href="#" className="hover:text-gold transition-colors">Home Delivery</a></li>
               <li><a href="#" className="hover:text-gold transition-colors">Outdoor Catering</a></li>
               <li><a href="#" className="hover:text-gold transition-colors">Private Events</a></li>
-              <li><a href="#" className="hover:text-gold transition-colors">Happy Hour Food</a></li>
             </ul>
           </div>
 
@@ -58,10 +56,6 @@ const Footer = () => {
               <li className="flex gap-3">
                 <span className="text-gold">Email:</span>
                 hello@kebablajawab.com
-              </li>
-              <li className="pt-4 flex items-center gap-2 text-white/30 text-xs">
-                <span className="px-2 py-1 border border-white/10 rounded">CASH ONLY</span>
-                <span>Payment Accepted</span>
               </li>
             </ul>
           </div>
