@@ -63,26 +63,26 @@ const CategoryMenu: React.FC<CategoryMenuProps> = ({ category, onBack }) => {
           <span className="font-medium">Back to Menu</span>
         </button>
 
-        <div className="border-b-2 border-[#2c241a]/10 pb-6 mb-10">
-          <div className="flex flex-col sm:flex-row justify-between items-start sm:items-end gap-4">
-            <h1 className="text-3xl md:text-6xl font-serif font-black tracking-tight uppercase">
+        <div className="border-b-2 border-[#2c241a]/10 pb-8 mb-12">
+          <div className="flex justify-between items-end">
+            <h1 className="text-5xl md:text-6xl font-serif font-black tracking-tight uppercase">
               {menuData.category}
             </h1>
             {menuData.headers && (
-              <div className="flex gap-4 md:gap-12 text-right justify-end w-full sm:w-auto">
+              <div className="flex gap-8 md:gap-12 text-right justify-end">
                 {menuData.headers.quarter && (
                   <div className="flex flex-col">
-                    <span className="text-sm md:text-xl font-black uppercase tracking-tight whitespace-pre-line leading-tight">{menuData.headers.quarter}</span>
+                    <span className="text-lg md:text-xl font-black uppercase tracking-tight whitespace-pre-line leading-tight">{menuData.headers.quarter}</span>
                   </div>
                 )}
                 {(menuData.headers.half || menuData.headers.left) && (
                   <div className="flex flex-col">
-                    <span className="text-sm md:text-xl font-black uppercase tracking-tight whitespace-pre-line leading-tight">{menuData.headers.half || menuData.headers.left}</span>
+                    <span className="text-lg md:text-xl font-black uppercase tracking-tight whitespace-pre-line leading-tight">{menuData.headers.half || menuData.headers.left}</span>
                   </div>
                 )}
                 {(menuData.headers.full || menuData.headers.right) && (
                   <div className="flex flex-col">
-                    <span className="text-sm md:text-xl font-black uppercase tracking-tight whitespace-pre-line leading-tight">{menuData.headers.full || menuData.headers.right}</span>
+                    <span className="text-lg md:text-xl font-black uppercase tracking-tight whitespace-pre-line leading-tight">{menuData.headers.full || menuData.headers.right}</span>
                   </div>
                 )}
               </div>
@@ -90,7 +90,7 @@ const CategoryMenu: React.FC<CategoryMenuProps> = ({ category, onBack }) => {
           </div>
         </div>
 
-        <div className="space-y-6 md:space-y-8">
+        <div className="space-y-8">
           {menuData.items.map((item, index) => {
             return (
               <motion.div 
@@ -98,48 +98,48 @@ const CategoryMenu: React.FC<CategoryMenuProps> = ({ category, onBack }) => {
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: index * 0.05 }}
-                className={`flex flex-col group ${item.isHeader ? 'mt-6 mb-2' : ''}`}
+                className={`flex flex-col group ${item.isHeader ? 'mt-8 mb-2' : ''}`}
               >
-                <div className="flex justify-between items-baseline gap-2">
-                  <div className="flex-grow flex items-baseline min-w-0">
-                    <span className={`${item.isHeader ? 'text-lg font-black' : 'text-lg md:text-2xl font-bold'} uppercase tracking-tight group-hover:text-gold transition-colors duration-300 truncate`}>
+                <div className="flex justify-between items-baseline">
+                  <div className="flex-grow flex items-baseline gap-2">
+                    <span className={`${item.isHeader ? 'text-xl font-black' : 'text-xl md:text-2xl font-bold'} uppercase tracking-tight group-hover:text-gold transition-colors duration-300`}>
                       {item.name}
                     </span>
-                    {!item.isHeader && <div className="flex-grow border-b border-dotted border-[#2c241a]/20 mx-2 min-w-[20px]"></div>}
+                    {!item.isHeader && <div className="flex-grow border-b border-dotted border-[#2c241a]/20 mx-2"></div>}
                   </div>
                   
-                  <div className="flex gap-4 md:gap-12 text-right justify-end flex-shrink-0">
+                  <div className="flex gap-8 md:gap-12 text-right justify-end">
                     {item.isHeader && item.subHeaders ? (
                       <>
                         {item.subHeaders.quarter && (
-                          <span className="text-sm font-black w-12 md:w-20 uppercase">{item.subHeaders.quarter}</span>
+                          <span className="text-lg font-black w-16 md:w-20 uppercase">{item.subHeaders.quarter}</span>
                         )}
                         {item.subHeaders.half && (
-                          <span className="text-sm font-black w-12 md:w-20 uppercase">{item.subHeaders.half}</span>
+                          <span className="text-lg font-black w-16 md:w-20 uppercase">{item.subHeaders.half}</span>
                         )}
                         {item.subHeaders.full && (
-                          <span className="text-sm font-black w-12 md:w-20 uppercase">{item.subHeaders.full}</span>
+                          <span className="text-lg font-black w-16 md:w-20 uppercase">{item.subHeaders.full}</span>
                         )}
                       </>
                     ) : (
                       <>
                         {item.quarterPrice !== undefined && (
-                          <span className="text-base md:text-2xl font-black w-12 md:w-20">
+                          <span className="text-xl md:text-2xl font-black w-16 md:w-20">
                             {typeof item.quarterPrice === 'number' ? `₹${item.quarterPrice}` : item.quarterPrice}
                           </span>
                         )}
                         {item.halfPrice !== undefined && (
-                          <span className="text-base md:text-2xl font-black w-12 md:w-20">
+                          <span className="text-xl md:text-2xl font-black w-16 md:w-20">
                             {typeof item.halfPrice === 'number' ? `₹${item.halfPrice}` : item.halfPrice}
                           </span>
                         )}
                         {item.fullPrice !== undefined && (
-                          <span className="text-base md:text-2xl font-black w-12 md:w-20">
+                          <span className="text-xl md:text-2xl font-black w-16 md:w-20">
                             {typeof item.fullPrice === 'number' ? `₹${item.fullPrice}` : item.fullPrice}
                           </span>
                         )}
                         {item.price !== undefined && (
-                          <span className="text-base md:text-2xl font-black w-12 md:w-20">
+                          <span className="text-xl md:text-2xl font-black w-16 md:w-20">
                             {typeof item.price === 'number' ? `₹${item.price}` : item.price}
                           </span>
                         )}

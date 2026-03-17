@@ -53,7 +53,7 @@ const Hero = () => {
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, delay: 0.2 }}
-          className="text-5xl md:text-9xl font-serif font-bold mb-6 pb-4 text-gold-gradient drop-shadow-[0_5px_15px_rgba(212,175,55,0.4)] tracking-tight leading-tight"
+          className="text-6xl md:text-9xl font-serif font-bold mb-6 pb-4 text-gold-gradient drop-shadow-[0_5px_15px_rgba(212,175,55,0.4)] tracking-tight leading-tight"
         >
           Kebab Lajawab
         </motion.h1>
