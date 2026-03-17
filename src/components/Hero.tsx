@@ -74,10 +74,10 @@ const Hero = () => {
           className="flex flex-col sm:flex-row items-center justify-center gap-4"
         >
           <a
-            href="#reservation"
+            href="tel:+918004265844"
             className="w-full sm:w-auto px-10 py-4 bg-gold hover:bg-amber-accent text-charcoal font-bold rounded-full transition-all duration-300 transform hover:scale-105 shadow-lg shadow-gold/20"
           >
-            Reserve a Table
+            Reserve via Call
           </a>
           <a
             href="#menu"

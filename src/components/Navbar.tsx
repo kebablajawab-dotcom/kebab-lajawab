@@ -49,10 +49,10 @@ const Navbar = () => {
             ))}
             
             <a
-              href="#reservation"
+              href="tel:+918004265844"
               className="px-6 py-2 bg-gold hover:bg-amber-accent text-charcoal font-bold rounded-full transition-all duration-300 transform hover:scale-105"
             >
-              Reserve Now
+              Reserve via Call
             </a>
           </div>
 
@@ -90,11 +90,11 @@ const Navbar = () => {
               ))}
               
               <a
-                href="#reservation"
+                href="tel:+918004265844"
                 onClick={() => setIsOpen(false)}
                 className="block w-full text-center px-6 py-3 bg-gold text-charcoal font-bold rounded-full mt-4"
               >
-                Reserve Now
+                Reserve via Call
               </a>
             </div>
           </motion.div>

@@ -34,8 +34,7 @@ const Contact = () => {
                 </div>
                 <div>
                   <h4 className="font-bold text-xl mb-1">Phone Number</h4>
-                  <p className="text-white/60">+91 98765 43210</p>
-                  <p className="text-white/60">+91 98765 43211</p>
+                  <p className="text-white/60">+91 80042 65844</p>
                 </div>
               </div>
 
@@ -74,11 +73,11 @@ const Contact = () => {
             initial={{ opacity: 0, scale: 0.95 }}
             whileInView={{ opacity: 1, scale: 1 }}
             viewport={{ once: true }}
-            className="rounded-3xl overflow-hidden shadow-2xl border-4 border-white/5 h-[500px]"
+            className="rounded-3xl overflow-hidden shadow-2xl border-4 border-white/5 h-[500px] relative group"
           >
-            {/* Embedded Google Maps Placeholder */}
+            {/* Embedded Google Maps */}
             <iframe
-              src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3606.8123456789!2d82.9!3d25.3!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zMjXCsDE4JzAwLjAiTiA4MsKwNTQnMDAuMCJF!5e0!3m2!1sen!2sin!4v1620000000000!5m2!1sen!2sin"
+              src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3606.8123456789!2d82.9157262!3d25.3023242!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x398e2df899999999%3A0x9999999999999999!2sKebab%20Lajawab!5e0!3m2!1sen!2sin!4v1620000000000!5m2!1sen!2sin"
               width="100%"
               height="100%"
               style={{ border: 0 }}
@@ -86,6 +85,18 @@ const Contact = () => {
               loading="lazy"
               referrerPolicy="no-referrer-when-downgrade"
             ></iframe>
+            
+            {/* Overlay Link to Official Google Maps */}
+            <a 
+              href="https://www.google.com/maps/search/?api=1&query=Kebab+Lajawab+Lohta+Varanasi"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="absolute inset-0 bg-charcoal/20 group-hover:bg-charcoal/0 transition-all duration-300 flex items-center justify-center"
+            >
+              <div className="bg-gold text-charcoal px-6 py-3 rounded-full font-bold shadow-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300 transform translate-y-4 group-hover:translate-y-0">
+                Open in Google Maps
+              </div>
+            </a>
           </motion.div>
         </div>
       </div>

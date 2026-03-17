@@ -35,10 +35,10 @@ const Footer = () => {
           <div>
             <h4 className="text-white font-bold mb-6 uppercase tracking-widest text-sm">Our Services</h4>
             <ul className="space-y-4 text-white/50">
-              <li><a href="#" className="hover:text-gold transition-colors">Dine-in Experience</a></li>
-              <li><a href="#" className="hover:text-gold transition-colors">Home Delivery</a></li>
-              <li><a href="#" className="hover:text-gold transition-colors">Outdoor Catering</a></li>
-              <li><a href="#" className="hover:text-gold transition-colors">Private Events</a></li>
+              <li>Dine-in Experience</li>
+              <li>Home Delivery</li>
+              <li>Outdoor Catering</li>
+              <li>Private Events</li>
             </ul>
           </div>
 
@@ -51,7 +51,7 @@ const Footer = () => {
               </li>
               <li className="flex gap-3">
                 <span className="text-gold">Phone:</span>
-                +91 98765 43210
+                +91 80042 65844
               </li>
               <li className="flex gap-3">
                 <span className="text-gold">Email:</span>
