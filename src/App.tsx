@@ -10,9 +10,21 @@ import Footer from './components/Footer';
 import WhatsAppButton from './components/WhatsAppButton';
 import CategoryMenu from './components/CategoryMenu';
 import { motion, AnimatePresence } from 'motion/react';
+import { auth, isUserAdmin } from './firebase';
+import { onAuthStateChanged, User } from 'firebase/auth';
 
 export default function App() {
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
+  const [user, setUser] = useState<User | null>(null);
+  const [isAdmin, setIsAdmin] = useState(false);
+
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
+      setUser(currentUser);
+      setIsAdmin(isUserAdmin(currentUser));
+    });
+    return () => unsubscribe();
+  }, []);
 
   // Scroll to top when category is selected
   useEffect(() => {
@@ -34,6 +46,7 @@ export default function App() {
             key="category-menu"
             category={selectedCategory} 
             onBack={() => setSelectedCategory(null)} 
+            isAdmin={isAdmin}
           />
         ) : (
           <motion.div
@@ -42,11 +55,11 @@ export default function App() {
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
           >
-            <Navbar />
+            <Navbar user={user} isAdmin={isAdmin} />
             <main>
               <Hero />
               <About />
-              <Menu onSelectCategory={setSelectedCategory} />
+              <Menu onSelectCategory={setSelectedCategory} isAdmin={isAdmin} />
               <Reviews />
               <Reservation />
               <Contact />

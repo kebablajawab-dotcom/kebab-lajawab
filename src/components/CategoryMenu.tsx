@@ -1,33 +1,78 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { ArrowLeft } from 'lucide-react';
+import { ArrowLeft, Image as ImageIcon, Loader2 } from 'lucide-react';
 import { DETAILED_MENU } from '../constants';
 import { CategoryMenuData } from '../types';
+import { db, handleFirestoreError, OperationType, fileToBase64 } from '../firebase';
+import { collection, onSnapshot, doc, setDoc } from 'firebase/firestore';
 
 interface CategoryMenuProps {
   category: string;
   onBack: () => void;
+  isAdmin: boolean;
 }
 
-const CategoryMenu: React.FC<CategoryMenuProps> = ({ category, onBack }) => {
+const CategoryMenu: React.FC<CategoryMenuProps> = ({ category, onBack, isAdmin }) => {
   const [menuData, setMenuData] = useState<CategoryMenuData | null>(null);
+  const [loading, setLoading] = useState<{ [key: string]: boolean }>({});
 
   useEffect(() => {
     const baseData = DETAILED_MENU[category] || null;
-    if (baseData) {
-      const savedImages = localStorage.getItem(`category_images_${category}`);
-      if (savedImages) {
-        const imagesMap = JSON.parse(savedImages);
-        const updatedItems = baseData.items.map((item, idx) => ({
+    if (!baseData) return;
+
+    const unsubscribe = onSnapshot(collection(db, 'menuItems'), (snapshot) => {
+      const imagesMap: { [key: string]: string } = {};
+      snapshot.forEach((doc) => {
+        const data = doc.data();
+        // Check if it's a category image or an item image
+        // We'll use a naming convention for IDs: category_itemName
+        if (data.image) {
+          imagesMap[doc.id] = data.image;
+        }
+      });
+
+      const updatedItems = baseData.items.map((item) => {
+        const docId = `${category}_${item.name}`.replace(/\//g, '_').replace(/\s+/g, '_');
+        return {
           ...item,
-          image: imagesMap[idx] || item.image
-        }));
-        setMenuData({ ...baseData, items: updatedItems });
-      } else {
-        setMenuData(baseData);
-      }
-    }
+          image: imagesMap[docId] || item.image
+        };
+      });
+
+      setMenuData({ ...baseData, items: updatedItems });
+    }, (error) => {
+      handleFirestoreError(error, OperationType.LIST, 'menuItems');
+    });
+
+    return () => unsubscribe();
   }, [category]);
+
+  const handleUpdateItemImage = async (itemName: string, currentImage: string | undefined, file: File) => {
+    if (!isAdmin || !menuData) return;
+
+    // Check file size (Firestore limit is 1MB per document)
+    if (file.size > 800 * 1024) { // 800KB to be safe
+      alert('Image size must be less than 800KB. Please compress the image or choose a smaller one.');
+      return;
+    }
+
+    const docId = `${category}_${itemName}`.replace(/\//g, '_').replace(/\s+/g, '_');
+    setLoading(prev => ({ ...prev, [docId]: true }));
+
+    try {
+      const base64 = await fileToBase64(file);
+      await setDoc(doc(db, 'menuItems', docId), {
+        category: category,
+        itemName: itemName,
+        image: base64,
+        updatedAt: new Date().toISOString()
+      }, { merge: true });
+    } catch (error) {
+      handleFirestoreError(error, OperationType.WRITE, `menuItems/${docId}`);
+    } finally {
+      setLoading(prev => ({ ...prev, [docId]: false }));
+    }
+  };
 
   if (!menuData) {
     return (
@@ -102,9 +147,37 @@ const CategoryMenu: React.FC<CategoryMenuProps> = ({ category, onBack }) => {
               >
                 <div className="flex justify-between items-baseline">
                   <div className="flex-grow flex items-baseline gap-2">
-                    <span className={`${item.isHeader ? 'text-xl font-black' : 'text-xl md:text-2xl font-bold'} uppercase tracking-tight group-hover:text-gold transition-colors duration-300`}>
-                      {item.name}
-                    </span>
+                    <div className="flex items-center gap-2">
+                      <span className={`${item.isHeader ? 'text-xl font-black' : 'text-xl md:text-2xl font-bold'} uppercase tracking-tight group-hover:text-gold transition-colors duration-300`}>
+                        {item.name}
+                      </span>
+                      {isAdmin && !item.isHeader && item.name && (
+                        <label
+                          className={`p-1 transition-colors ${
+                            loading[`${category}_${item.name}`.replace(/\//g, '_').replace(/\s+/g, '_')]
+                              ? 'text-gold/50 cursor-not-allowed'
+                              : 'text-[#2c241a]/30 hover:text-gold cursor-pointer'
+                          }`}
+                          title="Add/Change Item Image"
+                        >
+                          <input
+                            type="file"
+                            className="hidden"
+                            accept="image/*"
+                            disabled={loading[`${category}_${item.name}`.replace(/\//g, '_').replace(/\s+/g, '_')]}
+                            onChange={(e) => {
+                              const file = e.target.files?.[0];
+                              if (file) handleUpdateItemImage(item.name, item.image, file);
+                            }}
+                          />
+                          {loading[`${category}_${item.name}`.replace(/\//g, '_').replace(/\s+/g, '_')] ? (
+                            <Loader2 size={14} className="animate-spin" />
+                          ) : (
+                            <ImageIcon size={14} />
+                          )}
+                        </label>
+                      )}
+                    </div>
                     {!item.isHeader && <div className="flex-grow border-b border-dotted border-[#2c241a]/20 mx-2"></div>}
                   </div>
                   
@@ -148,9 +221,9 @@ const CategoryMenu: React.FC<CategoryMenuProps> = ({ category, onBack }) => {
                   </div>
                 </div>
 
-                {/* Image Preview if custom */}
+                {/* Image Preview */}
                 <AnimatePresence>
-                  {item.image && item.image.startsWith('data:') && (
+                  {item.image && (
                     <motion.div
                       initial={{ opacity: 0, height: 0 }}
                       animate={{ opacity: 1, height: 'auto' }}
@@ -160,8 +233,14 @@ const CategoryMenu: React.FC<CategoryMenuProps> = ({ category, onBack }) => {
                       <img 
                         src={item.image} 
                         alt={item.name} 
-                        className="h-24 w-32 object-cover rounded-md shadow-sm border border-gold/20"
+                        className="h-32 w-48 object-cover rounded-md shadow-md border border-[#2c241a]/10"
+                        referrerPolicy="no-referrer"
                       />
+                      {isAdmin && (
+                        <div className="absolute top-2 right-2">
+                           <div className="bg-gold text-charcoal text-[8px] font-bold px-1 rounded">CUSTOM</div>
+                        </div>
+                      )}
                     </motion.div>
                   )}
                 </AnimatePresence>

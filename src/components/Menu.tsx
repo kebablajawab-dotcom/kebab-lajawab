@@ -1,17 +1,21 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'motion/react';
 import { MENU_ITEMS, DETAILED_MENU } from '../constants';
-import { Utensils } from 'lucide-react';
+import { Utensils, Image as ImageIcon, Loader2 } from 'lucide-react';
 import jsPDF from 'jspdf';
 import autoTable from 'jspdf-autotable';
+import { db, handleFirestoreError, OperationType, fileToBase64 } from '../firebase';
+import { collection, onSnapshot, doc, setDoc } from 'firebase/firestore';
 
 interface MenuProps {
   onSelectCategory: (category: string) => void;
+  isAdmin: boolean;
 }
 
-const Menu: React.FC<MenuProps> = ({ onSelectCategory }) => {
+const Menu: React.FC<MenuProps> = ({ onSelectCategory, isAdmin }) => {
   const categories = ['STARTER', 'KEBAB', 'RICE/BIRYANI', 'ROTI/BREAD', 'BEVERAGES', 'GRAVY CHICKEN', 'GRAVY MUTTON', 'ROLL'];
   const [displayItems, setDisplayItems] = useState(MENU_ITEMS);
+  const [loading, setLoading] = useState<{ [key: string]: boolean }>({});
 
   const handleDownloadPDF = (e: React.MouseEvent) => {
     e.preventDefault();
@@ -82,18 +86,57 @@ const Menu: React.FC<MenuProps> = ({ onSelectCategory }) => {
     doc.save('Kebab_Lajawab_Menu.pdf');
   };
 
-  // Load saved images from localStorage on mount
+  // Load saved images from Firestore on mount
   useEffect(() => {
-    const savedImages = localStorage.getItem('menu_images');
-    if (savedImages) {
-      const imagesMap = JSON.parse(savedImages);
+    const unsubscribe = onSnapshot(collection(db, 'menuItems'), (snapshot) => {
+      const imagesMap: { [key: string]: string } = {};
+      snapshot.forEach((doc) => {
+        const data = doc.data();
+        if (data.category && data.image) {
+          imagesMap[data.category] = data.image;
+        }
+      });
+
       const updatedItems = MENU_ITEMS.map(item => ({
         ...item,
         image: imagesMap[item.category] || item.image
       }));
       setDisplayItems(updatedItems);
-    }
+    }, (error) => {
+      handleFirestoreError(error, OperationType.LIST, 'menuItems');
+    });
+
+    return () => unsubscribe();
   }, []);
+
+  const handleUpdateImage = async (category: string, currentItem: any, file: File) => {
+    if (!isAdmin) return;
+
+    // Check file size (Firestore limit is 1MB per document)
+    if (file.size > 800 * 1024) { // 800KB to be safe
+      alert('Image size must be less than 800KB. Please compress the image or choose a smaller one.');
+      return;
+    }
+
+    setLoading(prev => ({ ...prev, [category]: true }));
+    try {
+      const base64 = await fileToBase64(file);
+      // Use category as ID for simplicity in this mapping
+      const docId = category.replace(/\//g, '_');
+      await setDoc(doc(db, 'menuItems', docId), {
+        name: currentItem.name,
+        price: currentItem.price,
+        category: category,
+        image: base64,
+        description: currentItem.description,
+        isVeg: currentItem.isVeg
+      });
+    } catch (error) {
+      handleFirestoreError(error, OperationType.WRITE, 'menuItems/' + category);
+    } finally {
+      setLoading(prev => ({ ...prev, [category]: false }));
+    }
+  };
 
   return (
     <section id="menu" className="py-24 bg-charcoal/50">
@@ -145,6 +188,33 @@ const Menu: React.FC<MenuProps> = ({ onSelectCategory }) => {
                         className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
                         referrerPolicy="no-referrer"
                       />
+                      <div className="absolute top-4 left-4 z-20">
+                        <label
+                          className={`p-2 rounded-full backdrop-blur-md transition-all duration-300 flex items-center gap-2 ${
+                            isAdmin && !loading[category]
+                              ? 'bg-gold/80 text-charcoal hover:bg-gold cursor-pointer' 
+                              : 'bg-white/10 text-white/40 cursor-not-allowed'
+                          }`}
+                          title={isAdmin ? 'Change Image' : 'Login as Admin to change image'}
+                        >
+                          <input
+                            type="file"
+                            className="hidden"
+                            accept="image/*"
+                            disabled={!isAdmin || loading[category]}
+                            onChange={(e) => {
+                              const file = e.target.files?.[0];
+                              if (file) handleUpdateImage(category, displayItem, file);
+                            }}
+                          />
+                          {loading[category] ? (
+                            <Loader2 size={18} className="animate-spin" />
+                          ) : (
+                            <ImageIcon size={18} />
+                          )}
+                          {isAdmin && <span className="text-[10px] font-bold pr-1">ADD IMAGE</span>}
+                        </label>
+                      </div>
                       <div className="absolute top-4 right-4 flex gap-2 items-center">
                         <div className={`w-6 h-6 rounded-sm border-2 flex items-center justify-center ${displayItem.isVeg ? 'border-green-500' : 'border-red-500'}`}>
                           <div className={`w-2 h-2 rounded-full ${displayItem.isVeg ? 'bg-green-500' : 'bg-red-500'}`}></div>

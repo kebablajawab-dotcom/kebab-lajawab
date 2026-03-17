@@ -1,0 +1,25 @@
+{
+  "entities": {
+    "MenuItem": {
+      "title": "MenuItem",
+      "description": "A menu item in the restaurant.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "name": { "type": "string" },
+        "description": { "type": "string" },
+        "price": { "type": "number" },
+        "category": { "type": "string" },
+        "isVeg": { "type": "boolean" },
+        "image": { "type": "string" }
+      },
+      "required": ["name", "price", "category", "image"]
+    }
+  },
+  "firestore": {
+    "/menuItems/{itemId}": {
+      "schema": "MenuItem",
+      "description": "Collection of menu items."
+    }
+  }
+}
