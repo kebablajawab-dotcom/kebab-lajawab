@@ -111,8 +111,8 @@ const Menu: React.FC<MenuProps> = ({ onSelectCategory }) => {
           </p>
         </motion.div>
 
-        {/* Menu Sections */}
-        <div className="space-y-20">
+        {/* Menu Sections Grid */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
           {categories.map((category) => {
             const items = displayItems.filter(item => item.category === category);
             if (items.length === 0) return null;
@@ -121,56 +121,43 @@ const Menu: React.FC<MenuProps> = ({ onSelectCategory }) => {
             const displayImage = displayItem.image;
 
             return (
-              <div key={category} className="text-left">
-                <div className="flex items-center gap-4 mb-8">
-                  <h3 className="text-2xl md:text-3xl font-serif font-bold text-gold whitespace-nowrap">
+              <motion.div
+                key={category}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.4 }}
+                className="glass-card overflow-hidden group hover:border-gold/30 transition-all duration-300 flex flex-col"
+              >
+                <div className="relative h-48 overflow-hidden">
+                  <img
+                    src={displayImage}
+                    alt={category}
+                    className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+                    referrerPolicy="no-referrer"
+                  />
+                  <div className="absolute top-3 right-3 flex gap-2 items-center">
+                    <div className={`w-5 h-5 rounded-sm border-2 flex items-center justify-center ${displayItem.isVeg ? 'border-green-500' : 'border-red-500'}`}>
+                      <div className={`w-1.5 h-1.5 rounded-full ${displayItem.isVeg ? 'bg-green-500' : 'bg-red-500'}`}></div>
+                    </div>
+                  </div>
+                  <div className="absolute inset-0 bg-gradient-to-t from-charcoal/90 via-charcoal/20 to-transparent opacity-60 group-hover:opacity-40 transition-opacity"></div>
+                </div>
+                <div className="p-6 flex flex-col flex-grow">
+                  <h3 className="text-xl font-serif font-bold text-gold mb-2 uppercase tracking-wider">
                     {category}
                   </h3>
-                  <div className="h-px bg-gold/20 flex-grow"></div>
-                </div>
-
-                <div className="max-w-md">
-                  <motion.div
-                    key={displayItem.id}
-                    initial={{ opacity: 0, y: 20 }}
-                    whileInView={{ opacity: 1, y: 0 }}
-                    viewport={{ once: true }}
-                    transition={{ duration: 0.4 }}
-                    className="glass-card overflow-hidden group hover:border-gold/30 transition-all duration-300"
+                  <p className="text-white/60 text-xs mb-6 line-clamp-2 flex-grow">
+                    Explore our selection of {category.toLowerCase()} dishes.
+                  </p>
+                  <button 
+                    onClick={() => onSelectCategory(category)}
+                    className="w-full py-2.5 bg-white/5 border border-gold/20 rounded-lg text-gold text-sm font-bold hover:bg-gold hover:text-charcoal transition-all duration-300"
                   >
-                    <div className="relative h-56 overflow-hidden">
-                      <img
-                        src={displayImage}
-                        alt={displayItem.name}
-                        className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
-                        referrerPolicy="no-referrer"
-                      />
-                      <div className="absolute top-4 right-4 flex gap-2 items-center">
-                        <div className={`w-6 h-6 rounded-sm border-2 flex items-center justify-center ${displayItem.isVeg ? 'border-green-500' : 'border-red-500'}`}>
-                          <div className={`w-2 h-2 rounded-full ${displayItem.isVeg ? 'bg-green-500' : 'bg-red-500'}`}></div>
-                        </div>
-                      </div>
-                      <div className="absolute bottom-0 left-0 right-0 p-4 bg-gradient-to-t from-charcoal to-transparent">
-                        <span className="text-gold font-serif font-bold text-2xl tracking-widest uppercase">
-                          {category}
-                        </span>
-                      </div>
-                    </div>
-                    <div className="p-6 text-left">
-                      <h4 className="text-xl font-bold mb-2 group-hover:text-gold transition-colors uppercase tracking-tight">
-                        {category}
-                      </h4>
-                      <p className="text-white/60 text-sm mb-4 line-clamp-2">{displayItem.description}</p>
-                      <button 
-                        onClick={() => onSelectCategory(category)}
-                        className="w-full py-2 border border-gold/30 rounded-lg text-gold text-sm font-bold hover:bg-gold hover:text-charcoal transition-all duration-300"
-                      >
-                        View Menu
-                      </button>
-                    </div>
-                  </motion.div>
+                    View Menu
+                  </button>
                 </div>
-              </div>
+              </motion.div>
             );
           })}
         </div>
