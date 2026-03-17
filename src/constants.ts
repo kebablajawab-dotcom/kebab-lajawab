@@ -44,7 +44,7 @@ export const MENU_ITEMS: MenuItem[] = [
     price: 40,
     category: 'ROTI/BREAD',
     isVeg: true,
-    image: 'https://images.unsplash.com/photo-1626082927389-6cd097cdc6ec?auto=format&fit=crop&w=800&q=80'
+    image: 'https://images.unsplash.com/photo-1606491956689-2ea8c5119c85?auto=format&fit=crop&w=800&q=80'
   },
   {
     id: '6',
