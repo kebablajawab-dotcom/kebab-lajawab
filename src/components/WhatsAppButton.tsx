@@ -4,7 +4,7 @@ import { motion } from 'motion/react';
 
 const WhatsAppButton = () => {
   return (
-    <div className="fixed bottom-8 right-8 z-50">
+    <div className="fixed bottom-24 right-8 z-50">
       {/* Ripple Effects */}
       <motion.div
         animate={{

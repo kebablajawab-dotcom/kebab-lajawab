@@ -1,6 +1,6 @@
 import { initializeApp } from 'firebase/app';
 import { getAuth, GoogleAuthProvider, signInWithPopup, signOut, onAuthStateChanged, User } from 'firebase/auth';
-import { getFirestore, collection, addDoc, getDocs, onSnapshot, query, doc, updateDoc, deleteDoc, getDocFromServer } from 'firebase/firestore';
+import { getFirestore, collection, addDoc, getDocs, onSnapshot, query, doc, updateDoc, deleteDoc, getDocFromServer, setDoc } from 'firebase/firestore';
 import firebaseConfig from '../firebase-applet-config.json';
 
 const app = initializeApp(firebaseConfig);
@@ -78,6 +78,38 @@ export interface FirestoreErrorInfo {
     }[];
   }
 }
+
+export interface Settings {
+  logo?: string;
+  heroImage?: string;
+  updatedAt?: string;
+}
+
+export const getSettings = async (): Promise<Settings | null> => {
+  try {
+    const docRef = doc(db, 'settings', 'global');
+    const docSnap = await getDocFromServer(docRef);
+    if (docSnap.exists()) {
+      return docSnap.data() as Settings;
+    }
+    return null;
+  } catch (error) {
+    console.error('Error fetching settings:', error);
+    return null;
+  }
+};
+
+export const updateSettings = async (settings: Settings) => {
+  try {
+    const docRef = doc(db, 'settings', 'global');
+    await setDoc(docRef, {
+      ...settings,
+      updatedAt: new Date().toISOString()
+    }, { merge: true });
+  } catch (error) {
+    handleFirestoreError(error, OperationType.WRITE, 'settings/global');
+  }
+};
 
 export function handleFirestoreError(error: unknown, operationType: OperationType, path: string | null) {
   const errInfo: FirestoreErrorInfo = {

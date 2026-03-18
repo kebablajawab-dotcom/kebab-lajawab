@@ -15,6 +15,7 @@ interface CategoryMenuProps {
 const CategoryMenu: React.FC<CategoryMenuProps> = ({ category, onBack, isAdmin }) => {
   const [menuData, setMenuData] = useState<CategoryMenuData | null>(null);
   const [loading, setLoading] = useState<{ [key: string]: boolean }>({});
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
   useEffect(() => {
     const baseData = DETAILED_MENU[category] || null;
@@ -49,10 +50,12 @@ const CategoryMenu: React.FC<CategoryMenuProps> = ({ category, onBack, isAdmin }
 
   const handleUpdateItemImage = async (itemName: string, currentImage: string | undefined, file: File) => {
     if (!isAdmin || !menuData) return;
+    setErrorMessage(null);
 
     // Check file size (Firestore limit is 1MB per document)
     if (file.size > 800 * 1024) { // 800KB to be safe
-      alert('Image size must be less than 800KB. Please compress the image or choose a smaller one.');
+      setErrorMessage('Image size must be less than 800KB. Please compress the image.');
+      setTimeout(() => setErrorMessage(null), 5000);
       return;
     }
 
@@ -133,6 +136,18 @@ const CategoryMenu: React.FC<CategoryMenuProps> = ({ category, onBack, isAdmin }
               </div>
             )}
           </div>
+          <AnimatePresence>
+            {errorMessage && (
+              <motion.p
+                initial={{ opacity: 0, height: 0 }}
+                animate={{ opacity: 1, height: 'auto' }}
+                exit={{ opacity: 0, height: 0 }}
+                className="text-red-600 font-bold text-sm mt-4 text-center bg-red-50 p-2 rounded border border-red-200"
+              >
+                {errorMessage}
+              </motion.p>
+            )}
+          </AnimatePresence>
         </div>
 
         <div className="space-y-8">

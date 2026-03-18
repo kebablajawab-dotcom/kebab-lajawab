@@ -3,27 +3,27 @@ import { MenuItem, Review, Offer } from './types';
 export const MENU_ITEMS: MenuItem[] = [
   {
     id: '1',
-    name: 'Chicken Lollipop',
-    description: 'Crispy and spicy chicken wings served with schezwan sauce.',
-    price: 220,
+    name: 'Chicken Roasted',
+    description: 'Succulent chicken roasted to perfection with traditional spices.',
+    price: 190,
     category: 'STARTER',
     isVeg: false,
-    image: 'https://images.unsplash.com/photo-1567620832903-9fc6debc209f?auto=format&fit=crop&w=800&q=80'
+    image: 'https://images.unsplash.com/photo-1598515214211-89d3c73ae83b?auto=format&fit=crop&w=800&q=80'
   },
   {
     id: '2',
     name: 'Mutton Seekh Kebab',
     description: 'Succulent minced mutton mixed with aromatic spices, grilled to perfection.',
-    price: 280,
+    price: 180,
     category: 'KEBAB',
     isVeg: false,
     image: 'https://images.unsplash.com/photo-1599487488170-d11ec9c172f0?auto=format&fit=crop&w=800&q=80'
   },
   {
     id: '3',
-    name: 'Chicken Tikka',
-    description: 'Boneless chicken chunks marinated in yogurt and spices, roasted in tandoor.',
-    price: 240,
+    name: 'Chicken Seekh Kebab',
+    description: 'Flavorful minced chicken blended with spices and grilled.',
+    price: 160,
     category: 'KEBAB',
     isVeg: false,
     image: 'https://images.unsplash.com/photo-1599487488170-d11ec9c172f0?auto=format&fit=crop&w=800&q=80'
@@ -32,7 +32,7 @@ export const MENU_ITEMS: MenuItem[] = [
     id: '4',
     name: 'Chicken Biryani',
     description: 'Fragrant basmati rice cooked with tender chicken and traditional spices.',
-    price: 350,
+    price: 320,
     category: 'RICE/BIRYANI',
     isVeg: false,
     image: 'https://images.unsplash.com/photo-1589302168068-964664d93dc0?auto=format&fit=crop&w=800&q=80'
@@ -48,18 +48,18 @@ export const MENU_ITEMS: MenuItem[] = [
   },
   {
     id: '6',
-    name: 'Chicken Butter Masala',
+    name: 'Butter Chicken',
     description: 'Tender chicken in a rich, creamy tomato-based gravy.',
-    price: 320,
+    price: 200,
     category: 'GRAVY CHICKEN',
     isVeg: false,
     image: 'https://images.unsplash.com/photo-1603894584373-5ac82b2ae398?auto=format&fit=crop&w=800&q=80'
   },
   {
     id: '7',
-    name: 'Mutton Rogan Josh',
-    description: 'Classic Kashmiri lamb curry with a rich, aromatic gravy.',
-    price: 380,
+    name: 'Mutton Handi',
+    description: 'Tender mutton cooked in a traditional handi with rich spices.',
+    price: 240,
     category: 'GRAVY MUTTON',
     isVeg: false,
     image: 'https://images.unsplash.com/photo-1631515243349-e0cb75fb8d3a?auto=format&fit=crop&w=800&q=80'
@@ -68,7 +68,7 @@ export const MENU_ITEMS: MenuItem[] = [
     id: '8',
     name: 'Chicken Egg Roll',
     description: 'Spiced chicken and egg wrapped in a crispy paratha.',
-    price: 120,
+    price: 95,
     category: 'ROLL',
     isVeg: false,
     image: 'https://images.unsplash.com/photo-1662116765994-4e4473693f2f?auto=format&fit=crop&w=800&q=80'
@@ -137,12 +137,10 @@ export const DETAILED_MENU: Record<string, CategoryMenuData> = {
       right: 'FULL 8 PCS'
     },
     items: [
-      { name: 'CHICKEN ROASTED', halfPrice: 160, fullPrice: 310 },
-      { name: 'CHICKEN BUTTER ROASTED', halfPrice: 200, fullPrice: 390 },
+      { name: 'CHICKEN ROASTED', halfPrice: 190, fullPrice: 380 },
       { name: 'CHICKEN AFGHANI CREAMY', halfPrice: 280, fullPrice: 550 },
-      { name: 'CHICKEN TIKKA DRY', halfPrice: 120, fullPrice: 240 },
       { name: 'CHICKEN TIKKA CREAMY', halfPrice: 130, fullPrice: 260 },
-      { name: 'CHICKEN HARIYALI TIKKA', halfPrice: 140, fullPrice: 280 },
+      { name: 'CHICKEN MALAI TIKKA CREAMY', halfPrice: 140, fullPrice: 280 },
       { name: 'CHICKEN HARIYALI TIKKA CREAMY', halfPrice: 140, fullPrice: 280 }
     ]
   },
@@ -153,9 +151,9 @@ export const DETAILED_MENU: Record<string, CategoryMenuData> = {
       right: 'FULL 4 PCS'
     },
     items: [
-      { name: 'MUTTON SHAMI KEBAB', halfPrice: 80, fullPrice: 160 },
+      { name: 'MUTTON SHAMI KEBAB', halfPrice: 90, fullPrice: 180 },
       { name: 'MUTTON SEEKH KEBAB', halfPrice: 90, fullPrice: 180 },
-      { name: 'CHICKEN SEEKH KEBAB', halfPrice: 70, fullPrice: 140 }
+      { name: 'CHICKEN SEEKH KEBAB', halfPrice: 80, fullPrice: 160 }
     ]
   },
   'RICE/BIRYANI': {
@@ -167,7 +165,7 @@ export const DETAILED_MENU: Record<string, CategoryMenuData> = {
     items: [
       { name: 'BIRYANI CHICKEN', halfPrice: 160, fullPrice: 320 },
       { name: 'BIRYANI MUTTON', halfPrice: 200, fullPrice: 400 },
-      { name: 'PLAIN RICE', halfPrice: 50, fullPrice: 90 }
+      { name: 'BIRYANI RICE', halfPrice: 60, fullPrice: 100 }
     ]
   },
   'ROTI/BREAD': {
@@ -207,13 +205,7 @@ export const DETAILED_MENU: Record<string, CategoryMenuData> = {
       { name: 'CHICKEN HANDI', quarterPrice: 180, halfPrice: 340, fullPrice: 650 },
       { name: 'CHICKEN ACHARI', quarterPrice: 200, halfPrice: 390, fullPrice: 700 },
       { name: 'BONELESS BUTTER CHICKEN', halfPrice: 200, fullPrice: 390 },
-      { name: 'BONELESS CHICKEN MASALA', halfPrice: 190, fullPrice: 370 },
-      { 
-        name: '', 
-        isHeader: true, 
-        subHeaders: { half: 'HALF', full: 'FULL' } 
-      },
-      { name: 'CHICKEN BOTI', halfPrice: 140, fullPrice: 260 }
+      { name: 'BONELESS CHICKEN MASALA', halfPrice: 190, fullPrice: 370 }
     ]
   },
   'GRAVY MUTTON': {
@@ -223,13 +215,7 @@ export const DETAILED_MENU: Record<string, CategoryMenuData> = {
       full: 'FULL\n4PCS'
     },
     items: [
-      { name: 'MUTTON HANDI', halfPrice: 240, fullPrice: 460 },
-      { 
-        name: '', 
-        isHeader: true, 
-        subHeaders: { half: 'HALF', full: 'FULL' } 
-      },
-      { name: 'MUTTON BOTI', halfPrice: 180, fullPrice: 310 }
+      { name: 'MUTTON HANDI', halfPrice: 240, fullPrice: 460 }
     ]
   },
   'ROLL': {
@@ -238,12 +224,11 @@ export const DETAILED_MENU: Record<string, CategoryMenuData> = {
       right: 'PER PC'
     },
     items: [
-      { name: 'MUTTON KABAB ROLL SINGLE', price: 85 },
-      { name: 'MUTTON KABAB ROLL DOUBLE', price: 130 },
-      { name: 'MUTTON BOTI ROLL', price: 110 },
+      { name: 'MUTTON KEBAB ROLL SINGLE', price: 90 },
+      { name: 'MUTTON KEBAB ROLL DOUBLE', price: 130 },
+      { name: 'CHICKEN ROLL', price: 90 },
       { name: 'CHICKEN EGG ROLL', price: 95 },
       { name: 'CHICKEN DOUBLE EGG ROLL', price: 105 },
-      { name: 'CHICKEN ROLL', price: 85 },
       { name: 'EGG ROLL', price: 60 },
       { name: 'DOUBLE EGG ROLL', price: 70 }
     ]

@@ -14,12 +14,25 @@
         "image": { "type": "string" }
       },
       "required": ["name", "price", "category", "image"]
+    },
+    "Settings": {
+      "title": "Settings",
+      "description": "Global application settings.",
+      "type": "object",
+      "properties": {
+        "logo": { "type": "string", "description": "Base64 encoded logo image." },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      }
     }
   },
   "firestore": {
     "/menuItems/{itemId}": {
       "schema": "MenuItem",
       "description": "Collection of menu items."
+    },
+    "/settings/{settingId}": {
+      "schema": "Settings",
+      "description": "Global settings for the application."
     }
   }
 }

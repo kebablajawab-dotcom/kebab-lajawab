@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { motion } from 'motion/react';
+import { motion, AnimatePresence } from 'motion/react';
 import { MENU_ITEMS, DETAILED_MENU } from '../constants';
 import { Utensils, Image as ImageIcon, Loader2 } from 'lucide-react';
 import jsPDF from 'jspdf';
@@ -16,6 +16,7 @@ const Menu: React.FC<MenuProps> = ({ onSelectCategory, isAdmin }) => {
   const categories = ['STARTER', 'KEBAB', 'RICE/BIRYANI', 'ROTI/BREAD', 'BEVERAGES', 'GRAVY CHICKEN', 'GRAVY MUTTON', 'ROLL'];
   const [displayItems, setDisplayItems] = useState(MENU_ITEMS);
   const [loading, setLoading] = useState<{ [key: string]: boolean }>({});
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
   const handleDownloadPDF = (e: React.MouseEvent) => {
     e.preventDefault();
@@ -111,10 +112,12 @@ const Menu: React.FC<MenuProps> = ({ onSelectCategory, isAdmin }) => {
 
   const handleUpdateImage = async (category: string, currentItem: any, file: File) => {
     if (!isAdmin) return;
+    setErrorMessage(null);
 
     // Check file size (Firestore limit is 1MB per document)
     if (file.size > 800 * 1024) { // 800KB to be safe
-      alert('Image size must be less than 800KB. Please compress the image or choose a smaller one.');
+      setErrorMessage('Image size must be less than 800KB. Please compress the image.');
+      setTimeout(() => setErrorMessage(null), 5000);
       return;
     }
 
@@ -152,10 +155,22 @@ const Menu: React.FC<MenuProps> = ({ onSelectCategory, isAdmin }) => {
           <p className="text-white/60 max-w-2xl mx-auto mb-8">
             Explore our hand-crafted selection of authentic dishes, prepared with the finest ingredients and traditional spices.
           </p>
+          <AnimatePresence>
+            {errorMessage && (
+              <motion.p
+                initial={{ opacity: 0, y: -10 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -10 }}
+                className="text-red-500 font-bold text-sm mb-8"
+              >
+                {errorMessage}
+              </motion.p>
+            )}
+          </AnimatePresence>
         </motion.div>
 
         {/* Menu Sections */}
-        <div className="space-y-20">
+        <div className="space-y-12">
           {categories.map((category) => {
             const items = displayItems.filter(item => item.category === category);
             if (items.length === 0) return null;
@@ -164,7 +179,7 @@ const Menu: React.FC<MenuProps> = ({ onSelectCategory, isAdmin }) => {
             const displayImage = displayItem.image;
 
             return (
-              <div key={category} className="text-left">
+              <div key={category} id={`category-${category}`} className="text-left scroll-mt-24">
                 <div className="flex items-center gap-4 mb-8">
                   <h3 className="text-2xl md:text-3xl font-serif font-bold text-gold whitespace-nowrap">
                     {category}
@@ -172,7 +187,7 @@ const Menu: React.FC<MenuProps> = ({ onSelectCategory, isAdmin }) => {
                   <div className="h-px bg-gold/20 flex-grow"></div>
                 </div>
 
-                <div className="max-w-md">
+                <div className="max-w-sm">
                   <motion.div
                     key={displayItem.id}
                     initial={{ opacity: 0, y: 20 }}
@@ -181,7 +196,7 @@ const Menu: React.FC<MenuProps> = ({ onSelectCategory, isAdmin }) => {
                     transition={{ duration: 0.4 }}
                     className="glass-card overflow-hidden group hover:border-gold/30 transition-all duration-300"
                   >
-                    <div className="relative h-56 overflow-hidden">
+                    <div className="relative h-44 overflow-hidden">
                       <img
                         src={displayImage}
                         alt={displayItem.name}
@@ -226,11 +241,11 @@ const Menu: React.FC<MenuProps> = ({ onSelectCategory, isAdmin }) => {
                         </span>
                       </div>
                     </div>
-                    <div className="p-6 text-left">
-                      <h4 className="text-xl font-bold mb-2 group-hover:text-gold transition-colors uppercase tracking-tight">
+                    <div className="p-4 text-left">
+                      <h4 className="text-lg font-bold mb-1 group-hover:text-gold transition-colors uppercase tracking-tight">
                         {category}
                       </h4>
-                      <p className="text-white/60 text-sm mb-4 line-clamp-2">{displayItem.description}</p>
+                      <p className="text-white/60 text-xs mb-3 line-clamp-2">{displayItem.description}</p>
                       <button 
                         onClick={() => onSelectCategory(category)}
                         className="w-full py-2 border border-gold/30 rounded-lg text-gold text-sm font-bold hover:bg-gold hover:text-charcoal transition-all duration-300"

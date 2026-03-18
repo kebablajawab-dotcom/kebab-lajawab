@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import { Menu, X, UtensilsCrossed, LogIn, LogOut, User as UserIcon } from 'lucide-react';
+import { Menu, X, UtensilsCrossed, LogIn, LogOut, User as UserIcon, Image as ImageIcon, Loader2 } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
-import { loginWithGoogle, logout } from '../firebase';
+import { loginWithGoogle, logout, db, handleFirestoreError, OperationType, fileToBase64, updateSettings } from '../firebase';
 import { User } from 'firebase/auth';
+import { doc, onSnapshot } from 'firebase/firestore';
 
 interface NavbarProps {
   user: User | null;
@@ -12,19 +13,53 @@ interface NavbarProps {
 const Navbar = ({ user, isAdmin }: NavbarProps) => {
   const [isOpen, setIsOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+  const [logo, setLogo] = useState<string | null>(null);
+  const [logoLoading, setLogoLoading] = useState(false);
 
   useEffect(() => {
     const handleScroll = () => {
       setScrolled(window.scrollY > 50);
     };
     window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
+
+    // Listen for logo changes
+    const unsubscribe = onSnapshot(doc(db, 'settings', 'global'), (doc) => {
+      if (doc.exists()) {
+        setLogo(doc.data().logo || null);
+      }
+    }, (error) => {
+      handleFirestoreError(error, OperationType.GET, 'settings/global');
+    });
+
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+      unsubscribe();
+    };
   }, []);
+
+  const handleLogoUpload = async (file: File) => {
+    if (!isAdmin) return;
+    if (file.size > 800 * 1024) {
+      alert('Logo size must be less than 800KB.');
+      return;
+    }
+
+    setLogoLoading(true);
+    try {
+      const base64 = await fileToBase64(file);
+      await updateSettings({ logo: base64 });
+    } catch (error) {
+      console.error('Logo upload error:', error);
+    } finally {
+      setLogoLoading(false);
+    }
+  };
 
   const navLinks = [
     { name: 'Home', href: '#' },
     { name: 'About', href: '#about' },
     { name: 'Menu', href: '#menu' },
+    { name: 'Gallery', href: '#gallery' },
     { name: 'Contact', href: '#contact' },
   ];
 
@@ -36,11 +71,35 @@ const Navbar = ({ user, isAdmin }: NavbarProps) => {
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center">
-          <div className="flex items-center gap-2">
-            <UtensilsCrossed className="text-gold w-8 h-8" />
-            <span className="text-2xl font-serif font-bold tracking-tighter text-gold">
-              Kebab Lajawab
-            </span>
+          <div className="flex items-center gap-3 group relative">
+            {logo ? (
+              <img src={logo} alt="Logo" className="h-14 w-auto object-contain" />
+            ) : (
+              <UtensilsCrossed className="text-gold w-10 h-10" />
+            )}
+            <div className="flex flex-col leading-tight">
+              <span className="text-xl font-serif font-bold tracking-tighter text-gold uppercase">Kebab</span>
+              <span className="text-xl font-serif font-bold tracking-tighter text-gold uppercase">Lajawab</span>
+            </div>
+
+            {isAdmin && (
+              <div className="absolute -bottom-8 left-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-50">
+                <label className="flex items-center gap-1 bg-gold text-charcoal text-[10px] font-bold px-2 py-1 rounded cursor-pointer shadow-lg">
+                  <input 
+                    type="file" 
+                    className="hidden" 
+                    accept="image/*"
+                    onChange={(e) => {
+                      const file = e.target.files?.[0];
+                      if (file) handleLogoUpload(file);
+                    }}
+                    disabled={logoLoading}
+                  />
+                  {logoLoading ? <Loader2 size={10} className="animate-spin" /> : <ImageIcon size={10} />}
+                  CHANGE LOGO
+                </label>
+              </div>
+            )}
           </div>
 
           {/* Desktop Menu */}

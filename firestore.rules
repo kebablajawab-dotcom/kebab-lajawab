@@ -49,6 +49,26 @@ service cloud.firestore {
       allow delete: if isAdmin();
     }
 
+    match /gallery/{imageId} {
+      // Anyone can read gallery images
+      allow read: if true;
+      
+      // Only admin can create, update, or delete
+      allow create: if isAdmin() && 
+                    request.resource.data.image is string && 
+                    request.resource.data.image.size() < 1000000;
+      allow update: if isAdmin();
+      allow delete: if isAdmin();
+    }
+
+    match /settings/{settingId} {
+      // Anyone can read settings (like the logo)
+      allow read: if true;
+      
+      // Only admin can update settings
+      allow write: if isAdmin();
+    }
+
     // Default deny
     match /{document=**} {
       allow read, write: if false;

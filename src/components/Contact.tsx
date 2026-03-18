@@ -24,7 +24,7 @@ const Contact = () => {
                 </div>
                 <div>
                   <h4 className="font-bold text-xl mb-1">Our Location</h4>
-                  <p className="text-white/60">629, Nai Bazar Lohta, In front of Ruby Textiles, Varanasi, Uttar Pradesh</p>
+                  <p className="text-white/60">629, Nai Bazar, Lohta, Kerakatpur, Near Lohta Police station, Infront of Ruby textiles, Varanasi</p>
                 </div>
               </div>
 
@@ -53,13 +53,14 @@ const Contact = () => {
               <h4 className="font-bold mb-6">Follow Us</h4>
               <div className="flex gap-4">
                 {[
-                  { icon: <Instagram />, href: '#' },
-                  { icon: <Facebook />, href: '#' },
-                  { icon: <Youtube />, href: '#' },
+                  { icon: <Instagram />, href: 'https://www.instagram.com/kebablajawab?igsh=MW9xNmIxcXJtcnd6YQ==' },
+                  { icon: <Facebook />, href: 'https://www.facebook.com/share/1J5hrWVCCk/' },
                 ].map((social, i) => (
                   <a
                     key={i}
                     href={social.href}
+                    target="_blank"
+                    rel="noopener noreferrer"
                     className="w-12 h-12 rounded-full bg-white/5 border border-white/10 flex items-center justify-center text-white hover:bg-gold hover:text-charcoal hover:border-gold transition-all duration-300"
                   >
                     {social.icon}
